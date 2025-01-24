@@ -1,0 +1,93 @@
+---
+title: "My penguin report"
+author: "Mariana Semenyshyn"
+date: "2025-01-24"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+```{r packages, include=FALSE}
+library(tidyverse)
+
+```
+
+
+
+![Some general information on our penguins] (../figures/penguins_1.jpg) {wildth="600"}
+
+We have calculated the flipper length to mass ration for theree species of 
+penguins in our dataset. Below is a boxplot showing the median and interquartile 
+range for all penguins. 
+
+```{r echo=FALSE, warning=FALSE, message=FALSE}
+penguins_ratio_data <-read_csv("data/penguins_ratio_data.csv")
+
+penguins_ratio_data |>
+  janitor::clean_names() |>
+  separate(species, sep = "penguin|Penguin", 
+           into = c("species_common", "species_scientific")) |>
+  mutate(species_scientific = str_replace_all(species_scientific, pattern = "[\\(\\)]",
+                                              replacement = "")) |>
+  
+  ggplot(aes(x=species_scientific, y = length_mass_ratio)) +
+  geom_boxplot() +
+  geom_jitter(width = 0.2, alpha = 0.5)+
+  labs(title = "The ration of flipper length to body mass for different species of penguins",
+x = "Species",
+y = "Flipper Length to Body Mass Ratio") +
+  theme_classic()+
+  theme(
+    axis.text.x =  element_text(face = "bold.italic"),
+    axis.text.y = element_text(face = "bold"),
+    plot.title = element_text(color = "#0099f8",
+    size = 16, face = "bold", hjust = 0.5), 
+plot_subtitle = element_text(face = "bold.italic", hjust = 0.5),
+plot.caption = element_text(face = "italic")
+  )
+```
+
+```{r inlinevalues, include=FALSE}
+gentoo_ratio_mean <-penguins_ratio_data |>
+  filter(Species == "Gentoo penguin (Pygoscelis papua)") |>
+  summarise(round(mean(length_mass_ratio, na.rm = TRUE),
+                  digits = 3)) |>
+
+  pull()
+
+adelie_ratio_mean <-penguins_ratio_data |>
+  filter(Species == "Adelie Penguin (Pygoscelis adeliae)") |>
+  summarise(round(mean(length_mass_ratio, na.rm = TRUE),
+                  digits = 3)) |>
+  
+  pull()
+  
+  chinstrap_ratio_mean <-penguins_ratio_data |>
+  filter(Species == "Chinstrap penguin (Pygoscelis antarctica)") |>
+  summarise(round(mean(length_mass_ratio, na.rm = TRUE),
+                  digits = 3)) |>
+    pull()
+```
+
+The above plot shows the relationship between penguin body mass and flipper length. The Gentoo penguins had the smallest flipper length to body mass ratio, with an average of `r gentoo_ratio_mean`, followed by the Adelie and the Chinstrap penguins, at `r adelie_ratio_mean` and `r chinstrap_ratio_mean`, respectively.
+
+
+| Average Penguin Lenght to Body Mass Ratio|    |
+|------------------------------------------|----|
+|Gentoo| `r gentoo_ratio_mean`|
+|Adelee| `r adelie_ratio_mean`|
+|Chinstrap | `r chinstrap_ratio_mean`|
+
+
+#Exercise
+
+##bulleted list
+
+1. My favourite programming language is **R**
+1. My favourite function is * `ggplot()`
+1. ***I want to learn python***
+1. [A great cheatsheet](https://rmarkdown.rstudio.com/lesson-15.HTML)
+
+
+
